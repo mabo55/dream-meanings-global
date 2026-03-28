@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 夢占い辞典 - あなたの夢が教えるメッセージ</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6; color: #333; background: #f8f9fa;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; padding: 40px 0; text-align: center; 
+        }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2em; opacity: 0.9; }
+        .article-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 30px; margin-top: 40px; 
+        }
+        .article-card { 
+            background: white; border-radius: 12px; padding: 25px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            transition: transform 0.3s;
+        }
+        .article-card:hover { transform: translateY(-5px); }
+        .article-title { font-size: 1.4em; color: #2c3e50; margin-bottom: 15px; }
+        .article-content { color: #555; line-height: 1.7; }
+        .seichi-link { 
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white; padding: 20px; border-radius: 8px; margin-top: 20px;
+        }
+        .seichi-link a { color: white; text-decoration: none; font-weight: bold; }
+        .loading { text-align: center; padding: 60px; font-size: 1.2em; color: #666; }
+        .tag { 
+            display: inline-block; background: #e74c3c; color: white;
+            padding: 4px 12px; border-radius: 15px; font-size: 0.85em; margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🌙 夢占い辞典</h1>
+            <p class="subtitle">あなたの夢が教えてくれる深層心理とメッセージ</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="content" class="loading">
+            🔮 夢の世界から記事を読み込み中...
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ 後でSupabaseの実際の設定値に置き換えます
+        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+        const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';
+        
+        // Supabaseクライアント初期化（後で設定）
+        let supabase;
+        
+        // 仮のデモ用関数（Supabase接続前でも動作確認可能）
+        function showDemoContent() {
+            const container = document.getElementById('content');
+            container.innerHTML = `
+                <div class="article-grid">
+                    <article class="article-card">
+                        <h2 class="article-title">【夢占い】空を飛ぶ夢の意味とは？</h2>
+                        <div class="article-content">
+                            空を飛ぶ夢は、自由への憧れや現状からの解放願望を表しています...
+                            <div class="tag">夢占い</div>
+                            <div class="tag">スピリチュアル</div>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <h2 class="article-title">【夢占い】神社の夢のスピリチュアルメッセージ</h2>
+                        <div class="article-content">
+                            神社の夢は、精神的な浄化や新しいスタートを意味することが多く...
+                            <div class="tag">神社</div>
+                            <div class="tag">スピリチュアル</div>
+                        </div>
+                    </article>
+                </div>
+            `;
+        }
+
+        async function loadDreamArticles() {
+            try {
+                // Supabaseが設定されていない場合はデモコンテンツを表示
+                if (!supabase || SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') {
+                    showDemoContent();
+                    return;
+                }
+
+                const { data: articles, error } = await supabase
+                    .from('dream_articles')
+                    .select('*')
+                    .order('published_at', { ascending: false })
+                    .limit(12);
+
+                const container = document.getElementById('content');
+                
+                if (!articles || articles.length === 0) {
+                    container.innerHTML = '<div class="loading">記事を自動生成中です。しばらくお待ちください...</div>';
+                    return;
+                }
+
+                let html = '<div class="article-grid">';
+                articles.forEach(article => {
+                    html += `
+                        <article class="article-card">
+                            <h2 class="article-title">${article.full_title}</h2>
+                            <div class="article-content">
+                                ${article.content ? article.content.substring(0, 300) + '...' : '生成中...'}
+                            </div>
+                    `;
+                    
+                    if (article.related_seichi_url) {
+                        html += `
+                            <div class="seichi-link">
+                                <strong>✨ この夢を現実で体験する</strong><br>
+                                <a href="${article.related_seichi_url}" target="_blank">
+                                    関連するパワースポットを訪れる
+                                </a>
+                            </div>
+                        `;
+                    }
+                    
+                    html += '</article>';
+                });
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showDemoContent(); // エラー時もデモコンテンツを表示
+            }
+        }
+
+        // ページ読み込み時に実行
+        loadDreamArticles();
+        
+        // 5分ごとに更新チェック
+        setInterval(loadDreamArticles, 300000);
+    </script>
+</body>
+</html>
