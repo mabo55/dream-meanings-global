@@ -57,60 +57,46 @@
         </div>
     </div>
 
-    <script>
-        // ⚠️ 後でSupabaseの実際の設定値に置き換えます
-        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-        const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';
+   <script>
+        // 👇 ここをStep1で取得した実際の値に書き換えてください
+        const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
         
-        // Supabaseクライアント初期化（後で設定）
-        let supabase;
-        
-        // 仮のデモ用関数（Supabase接続前でも動作確認可能）
-        function showDemoContent() {
-            const container = document.getElementById('content');
-            container.innerHTML = `
-                <div class="article-grid">
-                    <article class="article-card">
-                        <h2 class="article-title">【夢占い】空を飛ぶ夢の意味とは？</h2>
-                        <div class="article-content">
-                            空を飛ぶ夢は、自由への憧れや現状からの解放願望を表しています...
-                            <div class="tag">夢占い</div>
-                            <div class="tag">スピリチュアル</div>
-                        </div>
-                    </article>
-                    <article class="article-card">
-                        <h2 class="article-title">【夢占い】神社の夢のスピリチュアルメッセージ</h2>
-                        <div class="article-content">
-                            神社の夢は、精神的な浄化や新しいスタートを意味することが多く...
-                            <div class="tag">神社</div>
-                            <div class="tag">スピリチュアル</div>
-                        </div>
-                    </article>
-                </div>
-            `;
-        }
+        // Supabaseクライアント初期化
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function loadDreamArticles() {
             try {
-                // Supabaseが設定されていない場合はデモコンテンツを表示
-                if (!supabase || SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') {
-                    showDemoContent();
-                    return;
-                }
-
-                const { data: articles, error } = await supabase
+                // データベースから記事を取得
+                const { data: articles, error } = await db
                     .from('dream_articles')
                     .select('*')
                     .order('published_at', { ascending: false })
                     .limit(12);
 
+                if (error) throw error;
+
                 const container = document.getElementById('content');
                 
+                // まだ記事が0件の場合（現在はこれが正常）
                 if (!articles || articles.length === 0) {
-                    container.innerHTML = '<div class="loading">記事を自動生成中です。しばらくお待ちください...</div>';
+                    container.innerHTML = `
+                        <div class="article-grid">
+                            <div class="article-card" style="text-align: center; grid-column: 1 / -1;">
+                                <h2 class="article-title">✨ データベース接続成功！</h2>
+                                <div class="article-content">
+                                    <p style="font-size: 1.1em; color: #2c3e50;">
+                                        夢占いサイトの基盤が完成しました！<br><br>
+                                        現在、AIが新しい夢占い記事を執筆準備中です...<br>
+                                        次のステップで自動記事生成システムを構築します。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>`;
                     return;
                 }
 
+                // 記事がある場合の表示
                 let html = '<div class="article-grid">';
                 articles.forEach(article => {
                     html += `
@@ -119,35 +105,27 @@
                             <div class="article-content">
                                 ${article.content ? article.content.substring(0, 300) + '...' : '生成中...'}
                             </div>
+                        </article>
                     `;
-                    
-                    if (article.related_seichi_url) {
-                        html += `
-                            <div class="seichi-link">
-                                <strong>✨ この夢を現実で体験する</strong><br>
-                                <a href="${article.related_seichi_url}" target="_blank">
-                                    関連するパワースポットを訪れる
-                                </a>
-                            </div>
-                        `;
-                    }
-                    
-                    html += '</article>';
                 });
                 html += '</div>';
                 container.innerHTML = html;
                 
             } catch (error) {
                 console.error('Error:', error);
-                showDemoContent(); // エラー時もデモコンテンツを表示
+                document.getElementById('content').innerHTML = `
+                    <div class="loading" style="color: #e74c3c;">
+                        <h3>❌ データベース接続エラー</h3>
+                        <p>URLとキーが正しいか確認してください。<br>
+                        エラー詳細: ${error.message}</p>
+                    </div>`;
             }
         }
 
         // ページ読み込み時に実行
         loadDreamArticles();
         
-        // 5分ごとに更新チェック
+        // 5分ごとに新しい記事をチェック
         setInterval(loadDreamArticles, 300000);
     </script>
-</body>
 </html>
