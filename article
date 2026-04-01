@@ -191,8 +191,8 @@
 
 <script type="module">
     // ⚠️ Supabase設定（Step 3で取得した値に置き換えてください）
-    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
     
     // Supabase クライアントの初期化
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
