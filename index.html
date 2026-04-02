@@ -360,11 +360,11 @@
 
         async function loadDreamArticles() {
             try {
-                const { data: articles, error } = await db
-                    .from('dream_articles')
-                    .select('*')
-                    .order('published_at', { ascending: false })
-                    .limit(12);
+                const { data, error } = await supabase
+    .from('dream_articles')
+    .select('id, full_title, content, slug, published_at, topic_id')
+    .order('published_at', { ascending: false })
+    .limit(10);
 
                 if (error) throw error;
 
