@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 淡いパープルとグリーンのテーマカラー */
             --primary-purple: #E6E6FA;
             --primary-green: #E0F8E0;
             --accent-purple: #9B72CB;
@@ -45,7 +44,6 @@
             padding: 20px; 
         }
 
-        /* ヘッダー部分 */
         .site-header {
             text-align: center;
             padding: 40px 20px 20px;
@@ -70,7 +68,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* キャラクターセクション */
         .character-section {
             display: flex;
             align-items: center;
@@ -91,7 +88,6 @@
             box-shadow: 0 8px 25px rgba(155, 114, 203, 0.3);
             margin-right: 25px;
             flex-shrink: 0;
-            /* プレースホルダー：後でAI生成画像に差し替え */
             background: linear-gradient(135deg, var(--primary-purple), var(--primary-green));
             display: flex;
             align-items: center;
@@ -126,7 +122,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* 記事グリッド */
         .articles-header {
             text-align: center;
             margin: 40px 0 30px;
@@ -221,19 +216,25 @@
         }
 
         .read-more {
-            color: var(--accent-green);
-            font-weight: 600;
-            font-size: 0.9em;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-green));
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
             text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 600;
             margin-left: auto;
             font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(155, 114, 203, 0.3);
+            white-space: nowrap;
         }
 
         .read-more:hover {
-            color: var(--deep-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 114, 203, 0.4);
         }
 
-        /* ローディング状態 */
         .loading { 
             text-align: center; 
             padding: 60px 20px; 
@@ -255,7 +256,6 @@
             100% { transform: rotate(360deg); } 
         }
 
-        /* エラー状態 */
         .error-message {
             background: rgba(255, 235, 238, 0.9);
             border: 1px solid #ffcdd2;
@@ -265,7 +265,6 @@
             color: #c62828;
         }
 
-        /* レスポンシブデザイン */
         @media (max-width: 768px) {
             .character-section {
                 flex-direction: column;
@@ -286,7 +285,6 @@
             }
         }
 
-        /* フッター */
         .site-footer {
             text-align: center;
             padding: 30px 20px;
@@ -302,17 +300,14 @@
 </head>
 <body>
     <div class="container">
-        <!-- サイトヘッダー -->
         <header class="site-header">
             <h1 class="site-title">🌙 ルナ・ジャスミンの夢占いサロン</h1>
             <p class="site-subtitle">星と月の導きで、あなたの深層心理を優しく紐解きます</p>
         </header>
 
-        <!-- キャラクター紹介セクション -->
         <section class="character-section">
             <div class="character-avatar">
                 🧞‍♀️
-                <!-- 将来的にAI生成したオリジナル画像に差し替え予定 -->
             </div>
             <div class="character-speech">
                 <div class="character-name">夢占い師 ルナ・ジャスミン</div>
@@ -326,7 +321,6 @@
             </div>
         </section>
 
-        <!-- 記事セクション -->
         <section class="articles-header">
             <h2 class="articles-title">✨ 最新の夢占いメッセージ</h2>
             <p class="articles-subtitle">ルナ・ジャスミンが星々から読み取った、あなたへの導き</p>
@@ -337,39 +331,43 @@
             <p>星々から夢の記憶を読み取っています...</p>
         </div>
 
-        <!-- フッター -->
         <footer class="site-footer">
             <p>© 2024 Luna Jasmine Dream Salon | 本サイトの夢占いは心のセルフケアの一助としてご利用ください</p>
         </footer>
     </div>
 
     <script>
-        // Supabase設定（あなたの既存の値を使用）
         const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
         
+        // ✅ 修正1: 変数名をdbに統一
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         function truncateText(text, maxLength) {
             if (!text) return '';
-            // マークダウン記号を除去
-            const cleanText = text.replace(/#/g, '').replace(/\*/g, '');
+            const cleanText = text
+                .replace(/#{1,6}\s/g, '')      // Markdown見出し除去
+                .replace(/\*\*/g, '')          // 太字記号除去
+                .replace(/\*/g, '')            // イタリック記号除去
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // リンク記号除去
             if (cleanText.length <= maxLength) return cleanText;
             return cleanText.substring(0, maxLength) + '...';
         }
 
         async function loadDreamArticles() {
             try {
-                const { data, error } = await supabase
-    .from('dream_articles')
-    .select('id, full_title, content, slug, published_at, topic_id')
-    .order('published_at', { ascending: false })
-    .limit(10);
+                // ✅ 修正2: db.from()を使用し、data: articlesで受け取り
+                const { data: articles, error } = await db
+                    .from('dream_articles')
+                    .select('id, full_title, content, slug, published_at, topic_id')
+                    .order('published_at', { ascending: false })
+                    .limit(10);
 
                 if (error) throw error;
 
                 const container = document.getElementById('content');
                 
+                // ✅ 修正3: articles変数を正しく参照
                 if (!articles || articles.length === 0) {
                     container.innerHTML = `
                         <div class="speech-bubble" style="max-width: 600px; margin: 0 auto; text-align: center;">
@@ -382,8 +380,11 @@
                 }
 
                 let html = '<div class="article-grid">';
+                
                 articles.forEach(article => {
                     const cleanContent = truncateText(article.content, 120);
+                    // ✅ 強化4: slugのフォールバック処理でエラー耐性向上
+                    const articleSlug = article.slug || `article-${article.id}`;
                     
                     html += `
                         <article class="article-card">
@@ -394,11 +395,15 @@
                             <div class="article-footer">
                                 <div class="mini-avatar">🌙</div>
                                 <span class="author-name">ルナ・ジャスミンが解説</span>
-                                <a href="article.html?slug=${encodeURIComponent(article.slug)}" class="read-more-btn">詳しく読む</a>
-                                    </div>
+                                <a href="article.html?slug=${encodeURIComponent(articleSlug)}" 
+                                   class="read-more">
+                                    詳しく読む →
+                                </a>
+                            </div>
                         </article>
                     `;
                 });
+                
                 html += '</div>';
                 container.innerHTML = html;
                 
@@ -412,9 +417,8 @@
             }
         }
 
-        // 記事を読み込み、定期更新
         loadDreamArticles();
-        setInterval(loadDreamArticles, 300000); // 5分ごと
+        setInterval(loadDreamArticles, 300000);
     </script>
 </body>
 </html>
