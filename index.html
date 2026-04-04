@@ -6,419 +6,325 @@
     <title>🌙 ルナ・ジャスミンの夢占いサロン - 星と月が紐解く深層心理</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
+   <style>
         :root {
-            --primary-purple: #E6E6FA;
-            --primary-green: #E0F8E0;
-            --accent-purple: #9B72CB;
-            --accent-green: #81C784;
-            --deep-purple: #6A5ACD;
-            --soft-white: #FEFEFE;
-            --text-main: #4A4A4A;
-            --text-light: #7A7A7A;
-            --shadow-soft: 0 10px 30px rgba(155, 114, 203, 0.15);
-            --shadow-hover: 0 15px 35px rgba(155, 114, 203, 0.25);
-        }
-
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+            --primary-purple: #6B4C9A;
+            --accent-green: #4CAF50;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-color: #333333;
+            --bg-light: #F9F7FA;
         }
         
-        body { 
-            font-family: 'Noto Serif JP', serif;
-            line-height: 1.8; 
-            color: var(--text-main); 
-            background: linear-gradient(135deg, 
-                var(--primary-purple) 0%, 
-                var(--soft-white) 25%, 
-                var(--primary-green) 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
+        * {
+            box-sizing: border-box;
         }
-
-        .container { 
-            max-width: 1100px; 
-            margin: 0 auto; 
-            padding: 20px; 
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
         }
-
-        .site-header {
+        
+        header {
+            background: var(--bg-gradient);
+            color: white;
             text-align: center;
-            padding: 40px 20px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .site-title {
-            font-size: 2.2em;
-            color: var(--deep-purple);
-            margin-bottom: 10px;
-            font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .site-subtitle {
-            font-size: 1.1em;
-            color: var(--text-light);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .character-section {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: var(--shadow-soft);
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .character-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-purple);
-            box-shadow: 0 8px 25px rgba(155, 114, 203, 0.3);
-            margin-right: 25px;
-            flex-shrink: 0;
-            background: linear-gradient(135deg, var(--primary-purple), var(--primary-green));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        header h1 {
+            margin: 0;
             font-size: 2.5em;
+            letter-spacing: 2px;
         }
 
-        .character-speech {
-            flex: 1;
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
-        .character-name {
-            font-size: 1.3em;
-            color: var(--accent-purple);
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .character-message {
-            font-size: 1.05em;
-            color: var(--text-main);
-            line-height: 1.7;
-            position: relative;
-        }
-
-        .speech-bubble {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 25px;
-            border-radius: 20px;
-            position: relative;
-            border-left: 4px solid var(--accent-green);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .articles-header {
+        .section-title {
             text-align: center;
-            margin: 40px 0 30px;
-        }
-
-        .articles-title {
+            color: var(--primary-purple);
             font-size: 1.8em;
-            color: var(--deep-purple);
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--accent-green);
+            display: inline-block;
+            padding-bottom: 10px;
         }
 
-        .articles-subtitle {
-            color: var(--text-light);
-            font-family: 'Inter', sans-serif;
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
         }
-
-        .article-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 25px; 
-            margin-bottom: 40px;
-        }
-
-        .article-card { 
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            border-radius: 20px; 
-            padding: 25px; 
-            box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+        
+        .article-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid var(--primary-purple);
+            min-height: 280px;
         }
-
-        .article-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
-
-        .article-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: var(--shadow-hover);
-        }
-
-        .article-card:hover::before { 
-            opacity: 1; 
-        }
-
-        .article-title { 
-            font-size: 1.25em; 
-            color: var(--deep-purple); 
-            margin-bottom: 15px;
-            font-weight: 600;
+        
+        .article-title {
+            color: var(--primary-purple);
+            font-size: 1.3em;
+            margin: 0 0 15px 0;
             line-height: 1.4;
+            font-weight: bold;
+        }
+        
+        .article-content {
+            color: #555;
+            font-size: 1em;
+            flex-grow: 1;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
-        .article-content { 
-            color: var(--text-light); 
-            font-size: 0.95em;
-            margin-bottom: 20px;
-            line-height: 1.7;
+        .article-meta {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 10px;
         }
 
         .article-footer {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            border-top: 1px solid #eee;
             padding-top: 15px;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: auto;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .mini-avatar {
-            width: 30px; 
-            height: 30px;
+            font-size: 1.2em;
+            width: 32px;
+            height: 32px;
+            background: var(--bg-gradient);
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-green));
-            margin-right: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8em;
+            color: white;
         }
 
         .author-name {
-            color: var(--text-light);
-            font-size: 0.85em;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .read-more {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-green));
-            color: white;
-            padding: 8px 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-left: auto;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(155, 114, 203, 0.3);
-            white-space: nowrap;
-        }
-
-        .read-more:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(155, 114, 203, 0.4);
-        }
-
-        .loading { 
-            text-align: center; 
-            padding: 60px 20px; 
-            color: var(--accent-purple);
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
         }
         
-        .spinner {
-            width: 40px; 
-            height: 40px;
-            border: 3px solid var(--primary-purple);
-            border-top: 3px solid var(--accent-purple);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        .read-more-btn {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+        
+        .read-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.25);
         }
 
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
+        .loading, .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.2em;
+            color: var(--primary-purple);
         }
 
         .error-message {
-            background: rgba(255, 235, 238, 0.9);
-            border: 1px solid #ffcdd2;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            color: #c62828;
+            color: #e74c3c;
+            background: #fdf2f2;
+            border-radius: 10px;
+            margin: 20px 0;
         }
 
         @media (max-width: 768px) {
-            .character-section {
-                flex-direction: column;
-                text-align: center;
+            header h1 {
+                font-size: 2em;
             }
             
-            .character-avatar {
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-            
-            .site-title {
-                font-size: 1.8em;
-            }
-            
-            .article-grid {
+            .articles-grid {
                 grid-template-columns: 1fr;
             }
-        }
-
-        .site-footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--text-light);
-            font-size: 0.9em;
-            border-top: 1px solid rgba(155, 114, 203, 0.2);
-            margin-top: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            
+            .article-card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="site-header">
-            <h1 class="site-title">🌙 ルナ・ジャスミンの夢占いサロン</h1>
-            <p class="site-subtitle">星と月の導きで、あなたの深層心理を優しく紐解きます</p>
-        </header>
 
-        <section class="character-section">
-            <div class="character-avatar">
-                🧞‍♀️
-            </div>
-            <div class="character-speech">
-                <div class="character-name">夢占い師 ルナ・ジャスミン</div>
-                <div class="speech-bubble">
-                    <p class="character-message">
-                        ようこそ、愛しい魂よ。私はルナ・ジャスミン、砂漠の星空から夢のメッセージを読み解く者です。
-                        あなたが見た夢には、必ず今のあなたへの大切なサインが隠されています。
-                        一緒に、その神秘的なメッセージを優しく紐解いていきましょう。
-                    </p>
-                </div>
-            </div>
-        </section>
+<header>
+    <h1>🌙 Dream Meanings Global</h1>
+    <p>AI占い師ルナ・ジャスミンが解き明かす、あなたの夢のメッセージ</p>
+</header>
 
-        <section class="articles-header">
-            <h2 class="articles-title">✨ 最新の夢占いメッセージ</h2>
-            <p class="articles-subtitle">ルナ・ジャスミンが星々から読み取った、あなたへの導き</p>
-        </section>
-
-        <div id="content" class="loading">
-            <div class="spinner"></div>
-            <p>星々から夢の記憶を読み取っています...</p>
-        </div>
-
-        <footer class="site-footer">
-            <p>© 2024 Luna Jasmine Dream Salon | 本サイトの夢占いは心のセルフケアの一助としてご利用ください</p>
-        </footer>
+<div class="container">
+    <div style="text-align: center;">
+        <h2 class="section-title">✨ 最新の夢占いメッセージ</h2>
     </div>
+    
+    <div id="latest-articles">
+        <div class="loading">🔮 ルナ・ジャスミンが夢の記録を読み込んでいます...</div>
+    </div>
+</div>
 
-    <script>
-        const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
-        
-        // ✅ 修正1: 変数名をdbに統一
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script type="module">
+    // Supabase設定（大江さんのプロジェクト情報）
+    const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
+    
+    // Supabase クライアントの初期化
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function truncateText(text, maxLength) {
-            if (!text) return '';
-            const cleanText = text
-                .replace(/#{1,6}\s/g, '')      // Markdown見出し除去
-                .replace(/\*\*/g, '')          // 太字記号除去
-                .replace(/\*/g, '')            // イタリック記号除去
-                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // リンク記号除去
-            if (cleanText.length <= maxLength) return cleanText;
-            return cleanText.substring(0, maxLength) + '...';
-        }
+    async function loadArticles() {
+        try {
+            console.log('📖 記事データを取得中...');
 
-        async function loadDreamArticles() {
-            try {
-                // ✅ 修正2: db.from()を使用し、data: articlesで受け取り
-                const { data: articles, error } = await db
-                    .from('dream_articles')
-                    .select('id, full_title, content, slug, published_at, topic_id')
-                    .order('published_at', { ascending: false })
-                    .limit(10);
+            // ✅ 重要：selectの中に 'slug' を必ず含める！
+            const { data, error } = await supabase
+                .from('dream_articles')
+                .select('id, full_title, content, slug, published_at, topic_id')
+                .order('published_at', { ascending: false })
+                .limit(12);
 
-                if (error) throw error;
+            if (error) {
+                console.error('❌ Supabaseエラー:', error);
+                throw error;
+            }
 
-                const container = document.getElementById('content');
+            console.log('✅ 取得成功:', data?.length, '件の記事');
+
+            const articlesContainer = document.getElementById('latest-articles');
+
+            if (!data || data.length === 0) {
+                articlesContainer.innerHTML = `
+                    <div class="loading">
+                        まだ記事がありません。<br>
+                        ルナ・ジャスミンが最初の記事を執筆中です...
+                    </div>
+                `;
+                return;
+            }
+
+            // 記事カードのHTMLを生成
+            let html = '<div class="articles-grid">';
+
+            data.forEach((article, index) => {
+                // Markdownの記号を除去して抜粋文を作成
+                const rawContent = article.content || '';
+                const cleanContent = rawContent
+                    .replace(/#{1,6}\s/g, '')      // 見出し記号除去
+                    .replace(/\*\*/g, '')          // 太字記号除去
+                    .replace(/\*/g, '')            // イタリック記号除去
+                    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // リンク記号除去
+                    .replace(/`/g, '')             // コード記号除去
+                    .substring(0, 120) + '...';
+
+                // slugの確認とフォールバック
+                const articleSlug = article.slug || `article-${article.id}`;
                 
-                // ✅ 修正3: articles変数を正しく参照
-                if (!articles || articles.length === 0) {
-                    container.innerHTML = `
-                        <div class="speech-bubble" style="max-width: 600px; margin: 0 auto; text-align: center;">
-                            <p style="color: var(--accent-purple); font-size: 1.1em;">
-                                ✨ 現在、星の導きを受けながら新しい夢のメッセージを準備中です。<br>
-                                まもなく、あなたへの特別なメッセージをお届けしますわ。
-                            </p>
-                        </div>`;
-                    return;
-                }
+                // ✅ 重要：日本語文字を安全なURL形式に変換
+                const safeSlug = encodeURIComponent(articleSlug);
 
-                let html = '<div class="article-grid">';
-                
-                articles.forEach(article => {
-                    const cleanContent = truncateText(article.content, 120);
-                    // ✅ 強化4: slugのフォールバック処理でエラー耐性向上
-                    const articleSlug = article.slug || `article-${article.id}`;
-                    
-                    html += `
-                        <article class="article-card">
-                            <h3 class="article-title">${article.full_title}</h3>
-                            <div class="article-content">
-                                ${cleanContent}
-                            </div>
-                            <div class="article-footer">
+                // 公開日の整形
+                const publishedDate = article.published_at 
+                    ? new Date(article.published_at).toLocaleDateString('ja-JP', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })
+                    : '';
+
+                // デバッグ用ログ（問題解決後に削除可能）
+                console.log(`📝 記事${index + 1}:`, {
+                    title: article.full_title?.substring(0, 20) + '...',
+                    originalSlug: article.slug,
+                    safeSlug: safeSlug.substring(0, 30) + '...',
+                    linkUrl: `article.html?slug=${safeSlug}`
+                });
+
+                html += `
+                    <article class="article-card">
+                        <div class="article-meta">📅 ${publishedDate}</div>
+                        <h3 class="article-title">${article.full_title || 'タイトル未設定'}</h3>
+                        <div class="article-content">
+                            ${cleanContent}
+                        </div>
+                        <div class="article-footer">
+                            <div class="author-info">
                                 <div class="mini-avatar">🌙</div>
                                 <span class="author-name">ルナ・ジャスミンが解説</span>
-                                <a href="article.html?slug=${encodeURIComponent(articleSlug)}" 
-                                   class="read-more">
-                                    詳しく読む →
-                                </a>
                             </div>
-                        </article>
-                    `;
-                });
-                
-                html += '</div>';
-                container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Error loading articles:', error);
-                document.getElementById('content').innerHTML = `
-                    <div class="error-message">
-                        <p>あら、星の巡りが少し乱れているようですわ。<br>
-                        少し時間をおいてから、また訪れてくださいね。</p>
-                    </div>`;
-            }
-        }
+                            <a href="article.html?slug=${safeSlug}" 
+                               class="read-more-btn"
+                               onclick="console.log('🔗 リンククリック:', 'article.html?slug=${safeSlug}')">
+                                詳しく読む →
+                            </a>
+                        </div>
+                    </article>
+                `;
+            });
 
-        loadDreamArticles();
-        setInterval(loadDreamArticles, 300000);
-    </script>
+            html += '</div>';
+            articlesContainer.innerHTML = html;
+
+            console.log('🎉 記事一覧の表示完了');
+
+        } catch (error) {
+            console.error('💥 予期しないエラー:', error);
+            document.getElementById('latest-articles').innerHTML = `
+                <div class="error-message">
+                    <h3>エラーが発生しました</h3>
+                    <p>記事の読み込みに失敗しました。ページを再読み込みしてお試しください。</p>
+                    <p style="font-size: 0.8em; color: #666;">
+                        エラー詳細: ${error.message}
+                    </p>
+                </div>
+            `;
+        }
+    }
+
+    // ページ読み込み時に実行
+    document.addEventListener('DOMContentLoaded', loadArticles);
+</script>
+
 </body>
 </html>
