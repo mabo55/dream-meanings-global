@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌙 ルナ・ジャスミンの夢占いサロン - 星と月が紐解く深層心理</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-   <style>
+    <title>Dream Meanings Global | ルナ・ジャスミンの夢占い</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
         :root {
             --primary-purple: #6B4C9A;
             --accent-green: #4CAF50;
@@ -15,9 +15,7 @@
             --bg-light: #F9F7FA;
         }
         
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -32,18 +30,20 @@
             background: var(--bg-gradient);
             color: white;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            letter-spacing: 2px;
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         header p {
-            font-size: 1.2em;
+            font-size: 1.1em;
             opacity: 0.9;
             margin: 10px 0 0 0;
         }
@@ -66,7 +66,7 @@
 
         .articles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
         
@@ -75,73 +75,39 @@
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
             border-top: 4px solid var(--primary-purple);
-            min-height: 280px;
         }
         
         .article-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
         
-        .article-title {
+        .card-title {
             color: var(--primary-purple);
             font-size: 1.3em;
             margin: 0 0 15px 0;
-            line-height: 1.4;
             font-weight: bold;
+            line-height: 1.4;
         }
         
-        .article-content {
+        .card-content {
             color: #555;
-            font-size: 1em;
+            font-size: 0.95em;
             flex-grow: 1;
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
-        .article-meta {
+        .card-meta {
             font-size: 0.85em;
             color: #888;
             margin-bottom: 10px;
         }
 
-        .article-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-            margin-top: auto;
-        }
-
-        .author-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mini-avatar {
-            font-size: 1.2em;
-            width: 32px;
-            height: 32px;
-            background: var(--bg-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .author-name {
-            font-size: 0.9em;
-            color: #666;
-            font-weight: 500;
-        }
-        
         .read-more-btn {
             background: var(--bg-gradient);
             color: white;
@@ -150,180 +116,378 @@
             text-decoration: none;
             font-size: 0.9em;
             font-weight: bold;
+            text-align: center;
+            display: inline-block;
             transition: all 0.3s ease;
             box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            cursor: pointer;
         }
-        
+
         .read-more-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.25);
         }
 
-        .loading, .error-message {
-            text-align: center;
-            padding: 60px 20px;
-            font-size: 1.2em;
-            color: var(--primary-purple);
+        /* 詳細ページ用スタイル */
+        .article-detail-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
-        .error-message {
+        .article-badge {
+            display: inline-block;
+            background: var(--bg-gradient);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .detail-title {
+            color: var(--primary-purple);
+            font-size: 2em;
+            margin: 15px 0 15px 0;
+            border-bottom: 3px solid var(--accent-green);
+            padding-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .detail-meta {
+            color: #777;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .detail-body {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .detail-body h2 {
+            color: var(--primary-purple);
+            font-size: 1.4em;
+            margin: 35px 0 15px 0;
+            border-left: 4px solid var(--accent-green);
+            padding-left: 15px;
+        }
+
+        .detail-body h3 {
+            color: var(--primary-purple);
+            font-size: 1.2em;
+            margin: 25px 0 12px 0;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: var(--bg-gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .back-btn:hover { transform: translateY(-2px); }
+
+        .related-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .related-title {
+            color: var(--primary-purple);
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--primary-purple);
+            font-size: 1.2em;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
             color: #e74c3c;
             background: #fdf2f2;
-            border-radius: 10px;
+            border-radius: 8px;
             margin: 20px 0;
         }
 
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
-            
-            .articles-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .article-card {
-                padding: 20px;
-            }
+            .container { padding: 0 15px; }
+            .articles-grid { grid-template-columns: 1fr; }
+            .article-detail-box { padding: 25px; }
+            .detail-title { font-size: 1.5em; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>🌙 Dream Meanings Global</h1>
+    <a onclick="showHomePage()">🌙 Dream Meanings Global</a>
     <p>AI占い師ルナ・ジャスミンが解き明かす、あなたの夢のメッセージ</p>
 </header>
 
-<div class="container">
+<!-- 一覧表示エリア -->
+<div id="home-view" class="container">
     <div style="text-align: center;">
         <h2 class="section-title">✨ 最新の夢占いメッセージ</h2>
     </div>
-    
     <div id="latest-articles">
-        <div class="loading">🔮 ルナ・ジャスミンが夢の記録を読み込んでいます...</div>
+        <div class="loading">🔮 ルナ・ジャスミンが記録を読み込んでいます...</div>
+    </div>
+</div>
+
+<!-- 詳細表示エリア -->
+<div id="article-view" class="container" style="display: none;">
+    <div id="article-content-area">
+        <div class="loading">✨ 夢のメッセージを解読中...</div>
+    </div>
+    
+    <div class="related-section">
+        <h3 class="related-title">🔮 あなたにおすすめの夢占い</h3>
+        <div id="related-grid" class="articles-grid"></div>
     </div>
 </div>
 
 <script type="module">
-    // Supabase設定（大江さんのプロジェクト情報）
+    // Supabase設定
     const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
     
-    // Supabase クライアントの初期化
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function loadArticles() {
-        try {
-            console.log('📖 記事データを取得中...');
+    // 画面状態管理
+    function checkUrlAndShowPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
 
-            // ✅ 重要：selectの中に 'slug' を必ず含める！
+        if (slug) {
+            showArticlePage(slug);
+        } else {
+            showHomePage();
+        }
+    }
+
+    // ホームページ表示
+    window.showHomePage = function() {
+        document.getElementById('home-view').style.display = 'block';
+        document.getElementById('article-view').style.display = 'none';
+        document.title = 'Dream Meanings Global | ルナ・ジャスミンの夢占い';
+        window.history.pushState({}, '', window.location.pathname);
+        
+        if (document.getElementById('latest-articles').innerHTML.includes('読み込んでいます')) {
+            loadArticleList();
+        }
+    };
+
+    // 記事詳細ページ表示
+    window.showArticlePage = function(slug) {
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('article-view').style.display = 'block';
+        window.history.pushState({slug: slug}, '', `?slug=${encodeURIComponent(slug)}`);
+        loadArticleDetail(slug);
+    };
+
+    // 記事一覧読み込み
+    async function loadArticleList() {
+        try {
+            console.log('📖 記事一覧を取得中...');
+            
             const { data, error } = await supabase
                 .from('dream_articles')
-                .select('id, full_title, content, slug, published_at, topic_id')
+                .select('id, full_title, content, slug, published_at')
                 .order('published_at', { ascending: false })
                 .limit(12);
 
-            if (error) {
-                console.error('❌ Supabaseエラー:', error);
-                throw error;
-            }
-
-            console.log('✅ 取得成功:', data?.length, '件の記事');
-
-            const articlesContainer = document.getElementById('latest-articles');
+            if (error) throw error;
 
             if (!data || data.length === 0) {
-                articlesContainer.innerHTML = `
-                    <div class="loading">
-                        まだ記事がありません。<br>
-                        ルナ・ジャスミンが最初の記事を執筆中です...
-                    </div>
+                document.getElementById('latest-articles').innerHTML = `
+                    <div class="loading">まだ記事がありません。<br>ルナ・ジャスミンが最初の記事を執筆中です...</div>
                 `;
                 return;
             }
 
-            // 記事カードのHTMLを生成
             let html = '<div class="articles-grid">';
-
-            data.forEach((article, index) => {
-                // Markdownの記号を除去して抜粋文を作成
-                const rawContent = article.content || '';
-                const cleanContent = rawContent
-                    .replace(/#{1,6}\s/g, '')      // 見出し記号除去
-                    .replace(/\*\*/g, '')          // 太字記号除去
-                    .replace(/\*/g, '')            // イタリック記号除去
-                    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // リンク記号除去
-                    .replace(/`/g, '')             // コード記号除去
+            data.forEach(article => {
+                const safeSlug = article.slug || `article-${article.id}`;
+                const cleanContent = (article.content || '')
+                    .replace(/[#*`\[\]()]/g, '')
                     .substring(0, 120) + '...';
-
-                // slugの確認とフォールバック
-                const articleSlug = article.slug || `article-${article.id}`;
-                
-                // ✅ 重要：日本語文字を安全なURL形式に変換
-                const safeSlug = encodeURIComponent(articleSlug);
-
-                // 公開日の整形
-                const publishedDate = article.published_at 
-                    ? new Date(article.published_at).toLocaleDateString('ja-JP', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    })
-                    : '';
-
-                // デバッグ用ログ（問題解決後に削除可能）
-                console.log(`📝 記事${index + 1}:`, {
-                    title: article.full_title?.substring(0, 20) + '...',
-                    originalSlug: article.slug,
-                    safeSlug: safeSlug.substring(0, 30) + '...',
-                    linkUrl: `article.html?slug=${safeSlug}`
+                const date = new Date(article.published_at).toLocaleDateString('ja-JP', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                 });
 
                 html += `
-                    <article class="article-card">
-                        <div class="article-meta">📅 ${publishedDate}</div>
-                        <h3 class="article-title">${article.full_title || 'タイトル未設定'}</h3>
-                        <div class="article-content">
-                            ${cleanContent}
-                        </div>
-                        <div class="article-footer">
-                            <div class="author-info">
-                                <div class="mini-avatar">🌙</div>
-                                <span class="author-name">ルナ・ジャスミンが解説</span>
+                    <div class="article-card">
+                        <div class="card-meta">📅 ${date}</div>
+                        <h3 class="card-title">${article.full_title}</h3>
+                        <div class="card-content">${cleanContent}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85em; color: #666;">
+                                <span>🌙</span>
+                                <span>ルナ・ジャスミンが解説</span>
                             </div>
-                            <a href="article.html?slug=${safeSlug}" 
-                               class="read-more-btn"
-                               onclick="console.log('🔗 リンククリック:', 'article.html?slug=${safeSlug}')">
+                            <button class="read-more-btn" onclick="showArticlePage('${safeSlug}')">
                                 詳しく読む →
-                            </a>
+                            </button>
                         </div>
-                    </article>
+                    </div>
                 `;
             });
-
             html += '</div>';
-            articlesContainer.innerHTML = html;
-
-            console.log('🎉 記事一覧の表示完了');
+            
+            document.getElementById('latest-articles').innerHTML = html;
+            console.log('🎉 記事一覧表示完了');
 
         } catch (error) {
-            console.error('💥 予期しないエラー:', error);
+            console.error('❌ 記事一覧エラー:', error);
             document.getElementById('latest-articles').innerHTML = `
-                <div class="error-message">
+                <div class="error">
                     <h3>エラーが発生しました</h3>
                     <p>記事の読み込みに失敗しました。ページを再読み込みしてお試しください。</p>
-                    <p style="font-size: 0.8em; color: #666;">
-                        エラー詳細: ${error.message}
-                    </p>
                 </div>
             `;
         }
     }
 
-    // ページ読み込み時に実行
-    document.addEventListener('DOMContentLoaded', loadArticles);
+    // 記事詳細読み込み
+    async function loadArticleDetail(slug) {
+        try {
+            console.log('📖 記事詳細を取得中:', slug);
+            
+            const decodedSlug = decodeURIComponent(slug);
+            
+            const { data, error } = await supabase
+                .from('dream_articles')
+                .select('*')
+                .eq('slug', decodedSlug)
+                .maybeSingle();
+
+            if (error) throw error;
+
+            if (!data) {
+                document.getElementById('article-content-area').innerHTML = `
+                    <div class="article-detail-box">
+                        <div class="error">
+                            <h3>記事が見つかりません</h3>
+                            <p>指定された記事は存在しないか、削除された可能性があります。</p>
+                        </div>
+                        <button class="back-btn" onclick="showHomePage()">← トップページに戻る</button>
+                    </div>
+                `;
+                return;
+            }
+
+            document.title = `${data.full_title} | Dream Meanings Global`;
+
+            const date = new Date(data.published_at).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long', 
+                day: 'numeric'
+            });
+
+            const qualityScore = data.quality_score ? 
+                `${Number(data.quality_score).toFixed(1)}/10` : '―';
+
+            const htmlContent = marked.parse(data.content || '');
+
+            document.getElementById('article-content-area').innerHTML = `
+                <div class="article-detail-box">
+                    <div class="article-badge">🌙 ルナ・ジャスミンが解説</div>
+                    <h1 class="detail-title">${data.full_title}</h1>
+                    <div class="detail-meta">
+                        <span>📅 公開日: ${date}</span>
+                        <span>⭐ 品質スコア: ${qualityScore}</span>
+                    </div>
+                    <div class="detail-body">${htmlContent}</div>
+                    <button class="back-btn" onclick="showHomePage()">← 一覧に戻る</button>
+                </div>
+            `;
+
+            loadRelatedArticles(data.id);
+            console.log('🎉 記事詳細表示完了:', data.full_title);
+
+        } catch (error) {
+            console.error('❌ 記事詳細エラー:', error);
+            document.getElementById('article-content-area').innerHTML = `
+                <div class="article-detail-box">
+                    <div class="error">
+                        <h3>エラーが発生しました</h3>
+                        <p>記事の読み込み中にエラーが発生しました。</p>
+                    </div>
+                    <button class="back-btn" onclick="showHomePage()">← トップページに戻る</button>
+                </div>
+            `;
+        }
+    }
+
+    // 関連記事読み込み
+    async function loadRelatedArticles(currentId) {
+        try {
+            const { data, error } = await supabase
+                .from('dream_articles')
+                .select('full_title, slug, published_at')
+                .neq('id', currentId)
+                .order('published_at', { ascending: false })
+                .limit(4);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                document.getElementById('related-grid').innerHTML = `
+                    <p style="text-align: center; color: #777;">他の記事はまだありません。新しい記事をお楽しみに！</p>
+                `;
+                return;
+            }
+
+            let html = '';
+            data.forEach(article => {
+                const safeSlug = article.slug;
+                const date = new Date(article.published_at).toLocaleDateString('ja-JP');
+
+                html += `
+                    <div class="article-card" 
+                         style="cursor: pointer; min-height: auto;" 
+                         onclick="showArticlePage('${safeSlug}')">
+                        <h4 style="color: var(--primary-purple); margin: 0 0 10px 0; font-size: 1.1em;">
+                            ${article.full_title}
+                        </h4>
+                        <span style="font-size: 0.8em; color: #888;">📅 ${date}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('related-grid').innerHTML = html;
+            console.log('🔮 関連記事表示完了:', data.length, '件');
+
+        } catch (error) {
+            console.error('⚠️ 関連記事エラー:', error);
+        }
+    }
+
+    // ブラウザの戻る/進むボタン対応
+    window.addEventListener('popstate', checkUrlAndShowPage);
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', checkUrlAndShowPage);
 </script>
 
 </body>
