@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>夢占い詳細 | ルナ・ジャスミンの夢占いメッセージ</title>
-    
-    <!-- Markdown変換ライブラリ（AI生成コンテンツに最適） -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
@@ -16,6 +14,8 @@
             --text-color: #333333;
             --bg-light: #F9F7FA;
         }
+        
+        * { box-sizing: border-box; }
         
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -97,9 +97,7 @@
             margin: 25px 0 12px 0;
         }
         
-        .article-content p {
-            margin: 15px 0;
-        }
+        .article-content p { margin: 15px 0; }
         
         .article-content ul {
             margin: 15px 0;
@@ -117,20 +115,23 @@
             transition: transform 0.2s;
         }
         
-        .back-link:hover {
-            transform: translateY(-2px);
-        }
+        .back-link:hover { transform: translateY(-2px); }
         
-        .related-articles {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 2px solid #eee;
+        .related-section {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
         
         .related-title {
             color: var(--primary-purple);
             font-size: 1.3em;
             margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
         }
         
         .related-grid {
@@ -148,6 +149,7 @@
             transition: all 0.3s;
             border-left: 4px solid var(--primary-purple);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: block;
         }
         
         .related-card:hover {
@@ -170,6 +172,14 @@
             border-radius: 8px;
             margin: 20px 0;
         }
+
+        @media (max-width: 768px) {
+            .container, .related-section { 
+                margin: 15px;
+                padding: 20px;
+            }
+            .article-title { font-size: 1.5em; }
+        }
     </style>
 </head>
 <body>
@@ -182,75 +192,129 @@
     <div class="loading">✨ ルナ・ジャスミンが夢のメッセージを読み解いています...</div>
 </div>
 
-<div class="container related-articles">
+<div class="related-section" id="related-section" style="display:none;">
     <h3 class="related-title">🔮 あなたにおすすめの夢占い</h3>
-    <div class="related-grid" id="related-grid">
-        <!-- 関連記事がここに自動生成されます -->
-    </div>
+    <div class="related-grid" id="related-grid"></div>
 </div>
 
-<script type="module">
-    // ⚠️ Supabase設定（Step 3で取得した値に置き換えてください）
+<script>
+    // ========================================
+    // Supabase設定
+    // ========================================
     const SUPABASE_URL = 'https://qlxjgjgfdtfhaqkzsghi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFseGpnamdmZHRmaGFxa3pzZ2hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTg3MjIsImV4cCI6MjA5MDI3NDcyMn0.oNeOZpozQixlqMTGv_YFNqb4z9wcRzj7ibqfLXA-qKo';
-    
-    // Supabase クライアントの初期化
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // URLからslug（記事識別子）を取得
+    // ========================================
+    // URLからslugを取得
+    // ========================================
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
 
+    console.log('🔍 [デバッグ1] URLから取得したslug:', slug);
+    console.log('🌐 現在のURL:', window.location.href);
+
+    // ========================================
+    // Supabase REST APIで直接データ取得
+    // （モジュールimportを使わない安定版）
+    // ========================================
+    async function fetchFromSupabase(query) {
+        const url = `${SUPABASE_URL}/rest/v1/${query}`;
+        console.log('📡 [デバッグ2] APIリクエスト:', url);
+        
+        const response = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('📡 [デバッグ3] レスポンスステータス:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ APIエラー:', errorText);
+            throw new Error(`APIエラー: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ [デバッグ4] データ取得成功:', data);
+        return data;
+    }
+
+    // ========================================
+    // 記事の読み込みと表示
+    // ========================================
     async function loadArticle() {
         if (!slug) {
+            console.error('❌ slugが取得できませんでした');
             showError('記事が見つかりません。URLが正しくないか、記事が削除された可能性があります。');
             return;
         }
 
         try {
-            // Supabaseから記事データを取得
-            const { data, error } = await supabase
-                .from('dream_articles')
-                .select('*')
-                .eq('slug', slug)
-                .maybeSingle();
+            // slugでエンコードされた文字列をデコード
+            const decodedSlug = decodeURIComponent(slug);
+            console.log('🔓 [デバッグ5] デコード後のslug:', decodedSlug);
 
-            if (error) {
-                console.error('Supabase error:', error);
-                showError('記事の読み込み中にエラーが発生しました。');
+            // Supabase REST APIで記事取得
+            const encodedSlug = encodeURIComponent(decodedSlug);
+            const data = await fetchFromSupabase(
+                `dream_articles?slug=eq.${encodedSlug}&select=*`
+            );
+
+            if (!data || data.length === 0) {
+                console.warn('⚠️ 記事が見つかりません。slug:', decodedSlug);
+                
+                // デバッグ用：全記事のslugを表示
+                const allArticles = await fetchFromSupabase(
+                    'dream_articles?select=id,full_title,slug&order=published_at.desc&limit=5'
+                );
+                console.log('📚 [デバッグ6] データベース内の記事サンプル:', allArticles);
+                
+                showError(`指定された記事は存在しません。<br><small>検索したslug: ${decodedSlug}</small>`);
                 return;
             }
 
-            if (!data) {
-                showError('指定された記事は存在しません。');
-                return;
-            }
+            const article = data[0];
+            console.log('📖 [デバッグ7] 表示する記事:', article.full_title);
 
-            // 記事データを表示
-            displayArticle(data);
-            
-            // 関連記事を読み込み
-            loadRelatedArticles(data);
+            displayArticle(article);
+            loadRelatedArticles(article);
 
         } catch (error) {
-            console.error('Error loading article:', error);
-            showError('予期しないエラーが発生しました。');
+            console.error('💥 エラー発生:', error);
+            showError(`記事の読み込み中にエラーが発生しました。<br><small>${error.message}</small>`);
         }
     }
 
+    // ========================================
+    // 記事の表示
+    // ========================================
     function displayArticle(article) {
-        const publishedDate = new Date(article.published_at).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        
-        // AI生成のMarkdownコンテンツをHTMLに変換
-        const htmlContent = marked.parse(article.content || '');
-        
-        const qualityScore = article.quality_score ? 
-            `${Number(article.quality_score).toFixed(1)}/10` : '―';
+        // ページタイトルを記事タイトルに変更（SEO対策）
+        document.title = `${article.full_title} | ルナ・ジャスミンの夢占い`;
+
+        const publishedDate = article.published_at
+            ? new Date(article.published_at).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })
+            : '';
+
+        // Markdownをパース（markedライブラリを使用）
+        let htmlContent = '';
+        try {
+            htmlContent = marked.parse(article.content || '');
+        } catch (e) {
+            console.warn('⚠️ Markdownパースエラー:', e);
+            htmlContent = `<p>${(article.content || '').replace(/\n/g, '<br>')}</p>`;
+        }
+
+        const qualityScore = article.quality_score
+            ? `${Number(article.quality_score).toFixed(1)}/10`
+            : '―';
 
         document.getElementById('article-container').innerHTML = `
             <div class="article-badge">🌙 ルナ・ジャスミンが解説</div>
@@ -259,75 +323,68 @@
                 <span>📅 公開日: ${publishedDate}</span>
                 <span>⭐ 品質スコア: ${qualityScore}</span>
             </div>
-            <div class="article-content">${htmlContent}</div>
+            <div class="article-content" id="article-body">
+                ${htmlContent}
+            </div>
             <a href="index.html" class="back-link">← 一覧に戻る</a>
         `;
+
+        console.log('🎉 [デバッグ8] 記事表示完了');
     }
 
+    // ========================================
+    // 関連記事の読み込みと表示
+    // ========================================
     async function loadRelatedArticles(currentArticle) {
         try {
-            // 関連記事の取得ロジック（同じtopic_idを優先、なければ最新記事）
-            let { data: relatedArticles, error } = await supabase
-                .from('dream_articles')
-                .select('id, full_title, slug, topic_id, published_at')
-                .neq('id', currentArticle.id)
-                .order('published_at', { ascending: false })
-                .limit(6);
+            const data = await fetchFromSupabase(
+                `dream_articles?id=neq.${currentArticle.id}&select=id,full_title,slug,published_at&order=published_at.desc&limit=4`
+            );
 
-            if (error) {
-                console.error('Related articles error:', error);
+            if (!data || data.length === 0) {
+                console.log('ℹ️ 関連記事なし');
                 return;
             }
 
-            // 同じtopic_idの記事を優先的に表示
-            if (currentArticle.topic_id) {
-                const sameTopicArticles = relatedArticles.filter(
-                    article => article.topic_id === currentArticle.topic_id
-                );
-                const otherArticles = relatedArticles.filter(
-                    article => article.topic_id !== currentArticle.topic_id
-                );
-                
-                // 同じトピック3件 + 他のトピック3件の組み合わせ
-                relatedArticles = [...sameTopicArticles.slice(0, 3), ...otherArticles.slice(0, 3)];
-            }
+            const relatedGrid = document.getElementById('related-grid');
+            relatedGrid.innerHTML = data.map(article => `
+                <a href="article.html?slug=${encodeURIComponent(article.slug)}" 
+                   class="related-card">
+                    <strong>${article.full_title}</strong>
+                    <div style="font-size: 0.85em; color: #777; margin-top: 8px;">
+                        📅 ${new Date(article.published_at).toLocaleDateString('ja-JP')}
+                    </div>
+                </a>
+            `).join('');
 
-            displayRelatedArticles(relatedArticles.slice(0, 4));
+            // 関連記事セクションを表示
+            document.getElementById('related-section').style.display = 'block';
+
+            console.log('🔮 [デバッグ9] 関連記事表示完了:', data.length, '件');
 
         } catch (error) {
-            console.error('Error loading related articles:', error);
+            console.error('⚠️ 関連記事の読み込みエラー:', error);
         }
     }
 
-    function displayRelatedArticles(articles) {
-        const relatedGrid = document.getElementById('related-grid');
-        
-        if (articles.length === 0) {
-            relatedGrid.innerHTML = '<p style="text-align: center; color: #777;">他の記事はまだありません。新しい記事をお楽しみに！</p>';
-            return;
-        }
-
-        relatedGrid.innerHTML = articles.map(article => `
-            <a href="article.html?slug=${encodeURIComponent(article.slug)}" class="related-card">
-                <strong>${article.full_title}</strong>
-                <div style="font-size: 0.85em; color: #777; margin-top: 8px;">
-                    ${new Date(article.published_at).toLocaleDateString('ja-JP')}
-                </div>
-            </a>
-        `).join('');
-    }
-
+    // ========================================
+    // エラー表示
+    // ========================================
     function showError(message) {
         document.getElementById('article-container').innerHTML = `
             <div class="error">
-                <h3>エラー</h3>
+                <h3>⚠️ エラー</h3>
                 <p>${message}</p>
-                <a href="index.html" class="back-link">トップページに戻る</a>
+                <a href="index.html" class="back-link" style="margin-top: 20px;">
+                    ← トップページに戻る
+                </a>
             </div>
         `;
     }
 
-    // 記事読み込み開始
+    // ========================================
+    // 実行開始
+    // ========================================
     loadArticle();
 </script>
 
