@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dream-meanings-global.3m-consulting-jps.workers.dev/sitemap.xml
