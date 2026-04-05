@@ -82,7 +82,7 @@
 
         * { box-sizing: border-box; }
 
-      body {
+   body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-color);
     margin: 0;
@@ -93,19 +93,14 @@
     min-height: 100vh;
     position: relative;
     
-    /* ===== ご提供いただいた背景画像を使用 ===== */
-    background-image: 
-        linear-gradient(
-            rgba(15, 10, 40, 0.45),
-            rgba(15, 10, 40, 0.45)
-        ),
-        url('./bg-desert-night.jpg');
+    /* 背景画像の指定（シンプルなパス） */
+    background: 
+        linear-gradient(rgba(249, 247, 250, 0.75), rgba(249, 247, 250, 0.75)),
+        url('bg-desert-night.jpg');
     background-size: cover;
-    background-position: center center;
+    background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    /* フォールバック（画像読み込み前） */
-    background-color: #1a0a3e;
 }
 
 /* 背景画像読み込み失敗時のフォールバック */
