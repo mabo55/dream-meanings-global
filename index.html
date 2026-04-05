@@ -68,6 +68,9 @@
     <title>夢占い（dream-meanings-global）| ルナ・ジャスミンの夢占い</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <!-- 背景画像のプリロード -->
+    <link rel="preload" as="image" href="./bg-desert-night.jpg">
+    
     <style>
         :root {
             --primary-purple: #6B4C9A;
@@ -79,27 +82,47 @@
 
         * { box-sizing: border-box; }
 
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.7;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: relative;
-            /* 幻想的な砂漠の夜の月の背景 */
-            background: 
-                /* 読みやすさ確保のための薄いオーバーレイ */
-                linear-gradient(rgba(249, 247, 250, 0.75), rgba(249, 247, 250, 0.75)),
-                /* 砂漠の夜空と月の高品質フリー画像 */
-                url('https://images.unsplash.com/photo-1542361345-89e58247f2d5?auto=format&fit=crop&w=2000&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-        }
+      body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    
+    /* ===== ご提供いただいた背景画像を使用 ===== */
+    background-image: 
+        linear-gradient(
+            rgba(15, 10, 40, 0.45),
+            rgba(15, 10, 40, 0.45)
+        ),
+        url('./bg-desert-night.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* フォールバック（画像読み込み前） */
+    background-color: #1a0a3e;
+}
+
+/* 背景画像読み込み失敗時のフォールバック */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(
+        160deg,
+        #0d0628 0%,
+        #1a0a3e 30%,
+        #2d1b69 60%,
+        #1a3a2a 100%
+    );
+    z-index: -1;
+}
 
         header {
             background: rgba(107, 76, 154, 0.9);
