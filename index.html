@@ -83,27 +83,11 @@
         * { box-sizing: border-box; }
 
  body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    color: var(--text-color);
     margin: 0;
-    padding: 0;
-    line-height: 1.7;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
-    position: relative;
-    
-    /* 絶対パス指定で確実に読み込み */
-    background-image: url('/bg-desert-night.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;  /* Cloudflare Workers対応 */
-    
-    /* オーバーレイは別途pseudo-elementで実装 */
+    background: url('/bg-desert-night.jpg') center center / cover no-repeat;
     background-color: #1a0a3e;
 }
-
 /* 半透明オーバーレイ */
 body::before {
     content: '';
