@@ -82,7 +82,7 @@
 
         * { box-sizing: border-box; }
 
-   body {
+ body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-color);
     margin: 0;
@@ -93,14 +93,36 @@
     min-height: 100vh;
     position: relative;
     
-    /* 背景画像の指定（シンプルなパス） */
-    background: 
-        linear-gradient(rgba(249, 247, 250, 0.75), rgba(249, 247, 250, 0.75)),
-        url('bg-desert-night.jpg');
+    /* 絶対パス指定で確実に読み込み */
+    background-image: url('/bg-desert-night.jpg');
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-position: center center;
     background-repeat: no-repeat;
+    background-attachment: scroll;  /* Cloudflare Workers対応 */
+    
+    /* オーバーレイは別途pseudo-elementで実装 */
+    background-color: #1a0a3e;
+}
+
+/* 半透明オーバーレイ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(249, 247, 250, 0.75);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* コンテンツを前面に表示 */
+header,
+.main-content,
+footer {
+    position: relative;
+    z-index: 1;
 }
 
 /* 背景画像読み込み失敗時のフォールバック */
