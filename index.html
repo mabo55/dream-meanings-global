@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WRF7ZECTK2"></script>
+    <!-- Google Analytics（Cloudflare Workers対応版） -->
     <script>
+    (function() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-WRF7ZECTK2';
+        document.head.appendChild(script);
+        
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
         gtag('js', new Date());
-        gtag('config', 'G-WRF7ZECTK2');
+        gtag('config', 'G-WRF7ZECTK2', {
+            'send_page_view': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    })();
     </script>
 
     <!-- SEO基本最適化 -->
@@ -27,7 +37,7 @@
     <meta name="twitter:title" content="夢占い | ルナ・ジャスミンの夢メッセージ">
     <meta name="twitter:description" content="あなたの夢が伝えるスピリチュアルなサインを、占い師ルナ・ジャスミンが毎日解説します。">
 
-    <!-- 構造化データ（検索結果リッチ表示） -->
+    <!-- 構造化データ -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -51,8 +61,6 @@
     <!-- モバイル最適化 -->
     <meta name="theme-color" content="#6B4C9A">
     <meta name="apple-mobile-web-app-title" content="夢占い">
-
-    <!-- Search Console確認 -->
     <meta name="google-site-verification" content="FJfPanGBM3lIsFj1WSlCFi7GbOGTQ86-q4XyitHq7JM" />
 
     <meta charset="UTF-8">
@@ -113,7 +121,7 @@
             padding: 0 20px;
         }
 
-        /* ========== トップページ強化セクション ========== */
+        /* ========== hero-section ========== */
         .hero-section {
             text-align: center;
             margin-bottom: 40px;
@@ -139,27 +147,61 @@
             margin: 0 auto 20px auto;
         }
 
-        .hero-tags {
+        /* ========== カテゴリタグ ========== */
+        .category-tags {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
-        .hero-tag {
+        .category-tag {
             background: var(--bg-light);
             color: var(--primary-purple);
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 8px 18px;
+            border-radius: 25px;
             font-size: 0.9em;
-            border: 1px solid #d4c5e3;
-            transition: all 0.2s;
+            border: 2px solid #d4c5e3;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            font-weight: 500;
         }
 
-        .hero-tag:hover {
+        .category-tag:hover {
             background: var(--primary-purple);
             color: white;
+            border-color: var(--primary-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107,76,154,0.3);
+        }
+
+        .category-tag.active {
+            background: var(--bg-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(107,76,154,0.4);
+        }
+
+        /* ========== カテゴリ一覧ページ ========== */
+        .category-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .category-header h2 {
+            color: var(--primary-purple);
+            font-size: 1.8em;
+            margin: 0 0 10px 0;
+        }
+
+        .category-header p {
+            color: #666;
+            margin: 0;
         }
 
         /* ========== 記事一覧スタイル ========== */
@@ -217,6 +259,24 @@
             margin-bottom: 10px;
         }
 
+        /* 記事カードのカテゴリバッジ */
+        .card-category {
+            display: inline-block;
+            background: var(--bg-light);
+            color: var(--primary-purple);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            border: 1px solid #d4c5e3;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .card-category:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
         .read-more-btn {
             background: var(--bg-gradient);
             color: white;
@@ -236,7 +296,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.25);
         }
 
-        /* ========== 詳細・プライバシー共通スタイル ========== */
+        /* ========== 詳細・プライバシー共通 ========== */
         .content-box {
             background: white;
             border-radius: 12px;
@@ -270,6 +330,22 @@
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .detail-category-tag {
+            background: var(--bg-light);
+            color: var(--primary-purple);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            border: 1px solid #d4c5e3;
+            cursor: pointer;
+        }
+
+        .detail-category-tag:hover {
+            background: var(--primary-purple);
+            color: white;
         }
 
         .detail-body {
@@ -356,19 +432,10 @@
             text-decoration: underline;
         }
 
-        .footer-copy {
-            font-size: 0.85em;
-            color: #666;
-            margin: 5px 0;
-        }
+        .footer-copy { font-size: 0.85em; color: #666; margin: 5px 0; }
+        .footer-note { font-size: 0.8em; color: #888; margin-top: 5px; }
 
-        .footer-note {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        /* ========== 共通要素 ========== */
+        /* ========== 共通 ========== */
         .loading {
             text-align: center;
             padding: 50px;
@@ -383,6 +450,15 @@
             background: #fdf2f2;
             border-radius: 8px;
             margin: 20px 0;
+        }
+
+        .no-articles {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         @media (max-width: 768px) {
@@ -408,8 +484,6 @@
 
     <!-- ========== 一覧表示エリア ========== -->
     <div id="home-view" class="container">
-
-        <!-- トップページSEO強化セクション -->
         <div class="hero-section">
             <h1>ルナ・ジャスミンの夢占いメッセージ集</h1>
             <p>
@@ -418,22 +492,24 @@
                 占い師ルナ・ジャスミンが毎日お届けする夢占いで、<br>
                 恋愛・仕事・人間関係のヒントを見つけてみませんか？
             </p>
-            <div class="hero-tags">
-                <span class="hero-tag">🌙 神社の夢</span>
-                <span class="hero-tag">✈️ 空を飛ぶ夢</span>
-                <span class="hero-tag">🦷 歯が抜ける夢</span>
-                <span class="hero-tag">🏃 追いかけられる夢</span>
-                <span class="hero-tag">🐍 蛇の夢</span>
-                <span class="hero-tag">💒 結婚の夢</span>
-                <span class="hero-tag">🌊 海の夢</span>
-                <span class="hero-tag">🔥 火事の夢</span>
-                <span class="hero-tag">👶 赤ちゃんの夢</span>
-                <span class="hero-tag">💰 お金の夢</span>
+            <!-- カテゴリタグ（クリックで絞り込み） -->
+            <div class="category-tags" id="category-tags">
+                <span class="category-tag active" onclick="filterByCategory('all')">🌙 すべて</span>
+                <span class="category-tag" onclick="filterByCategory('神社・寺院')">⛩️ 神社・寺院</span>
+                <span class="category-tag" onclick="filterByCategory('空・飛行')">✈️ 空・飛行</span>
+                <span class="category-tag" onclick="filterByCategory('身体・健康')">🦷 身体・健康</span>
+                <span class="category-tag" onclick="filterByCategory('恐怖・不安')">🏃 恐怖・不安</span>
+                <span class="category-tag" onclick="filterByCategory('動物')">🐍 動物</span>
+                <span class="category-tag" onclick="filterByCategory('人間関係')">💑 人間関係</span>
+                <span class="category-tag" onclick="filterByCategory('自然・天候')">🌊 自然・天候</span>
+                <span class="category-tag" onclick="filterByCategory('お金・仕事')">💰 お金・仕事</span>
+                <span class="category-tag" onclick="filterByCategory('場所・建物')">🏠 場所・建物</span>
+                <span class="category-tag" onclick="filterByCategory('その他')">✨ その他</span>
             </div>
         </div>
 
         <div style="text-align: center;">
-            <h2 class="section-title">✨ 最新の夢占いメッセージ</h2>
+            <h2 class="section-title" id="list-section-title">✨ 最新の夢占いメッセージ</h2>
         </div>
         <div id="latest-articles">
             <div class="loading">🔮 ルナ・ジャスミンが記録を読み込んでいます...</div>
@@ -492,7 +568,7 @@
 
 </div>
 
-<!-- ========== 全ページ共通フッター ========== -->
+<!-- ========== フッター ========== -->
 <footer>
     <div class="footer-links">
         <a onclick="showHomePage()">🏠 ホーム</a>
@@ -513,6 +589,66 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ========================================
+    // カテゴリ自動判定ロジック（n8nのプロンプト変更不要）
+    // ========================================
+    const CATEGORY_RULES = [
+        {
+            name: '神社・寺院',
+            keywords: ['神社', '寺', '仏', '参拝', '鳥居', 'お守り', '神様', '仏様', '御朱印', '境内']
+        },
+        {
+            name: '空・飛行',
+            keywords: ['空', '飛ぶ', '飛行', '空中', '浮く', '雲', '空を', '翔', '羽ばたく', '宇宙']
+        },
+        {
+            name: '身体・健康',
+            keywords: ['歯', '髪', '血', '怪我', '病気', '身体', '体', '手', '足', '目', '耳', '顔', '肌']
+        },
+        {
+            name: '恐怖・不安',
+            keywords: ['追いかけ', '逃げる', '怖い', '恐怖', '暗い', '迷子', '迷う', '落ちる', '溺れる']
+        },
+        {
+            name: '動物',
+            keywords: ['猫', '犬', '蛇', '虫', '鳥', '魚', '熊', '虎', '龍', '動物', '馬', '牛', '豚']
+        },
+        {
+            name: '人間関係',
+            keywords: ['結婚', '恋愛', '好きな人', '別れ', '友達', '家族', '親', '子供', '赤ちゃん', '喧嘩', '再会']
+        },
+        {
+            name: '自然・天候',
+            keywords: ['海', '山', '川', '雨', '雪', '嵐', '火事', '地震', '花', '木', '森', '太陽', '月', '星']
+        },
+        {
+            name: 'お金・仕事',
+            keywords: ['お金', '仕事', '会社', '試験', '学校', '成功', '失敗', '財布', '宝', '給料']
+        },
+        {
+            name: '場所・建物',
+            keywords: ['家', '部屋', '学校', '病院', '駅', '電車', '車', '道', '橋', '城', '廃墟', '知らない家']
+        }
+    ];
+
+    // タイトルからカテゴリを自動判定
+    function detectCategory(title) {
+        for (const rule of CATEGORY_RULES) {
+            for (const keyword of rule.keywords) {
+                if (title.includes(keyword)) {
+                    return rule.name;
+                }
+            }
+        }
+        return 'その他';
+    }
+
+    // ========================================
+    // 全記事キャッシュ（フィルタリング用）
+    // ========================================
+    let allArticles = [];
+    let currentCategory = 'all';
+
+    // ========================================
     // SPA画面制御システム
     // ========================================
     function hideAllViews() {
@@ -531,14 +667,36 @@
                 document.title = '夢占い（dream-meanings-global）| ルナ・ジャスミンの夢占い';
                 if (updateHistory) window.history.pushState({page: 'home'}, '', window.location.pathname);
                 if (typeof gtag !== 'undefined') gtag('event', 'page_view', { page_title: 'ホーム' });
-                if (document.getElementById('latest-articles').innerHTML.includes('読み込んでいます')) {
+                if (allArticles.length === 0) {
                     loadArticleList();
+                }
+                break;
+
+            case 'category':
+                document.getElementById('home-view').style.display = 'block';
+                document.title = `${data.category}の夢占い | ルナ・ジャスミン`;
+                if (updateHistory) window.history.pushState(
+                    {page: 'category', category: data.category},
+                    '',
+                    `?category=${encodeURIComponent(data.category)}`
+                );
+                if (typeof gtag !== 'undefined') gtag('event', 'page_view', {
+                    page_title: `カテゴリ: ${data.category}`
+                });
+                if (allArticles.length === 0) {
+                    loadArticleList(data.category);
+                } else {
+                    applyFilter(data.category);
                 }
                 break;
 
             case 'article':
                 document.getElementById('article-view').style.display = 'block';
-                if (updateHistory) window.history.pushState({page: 'article', slug: data.slug}, '', `?slug=${encodeURIComponent(data.slug)}`);
+                if (updateHistory) window.history.pushState(
+                    {page: 'article', slug: data.slug},
+                    '',
+                    `?slug=${encodeURIComponent(data.slug)}`
+                );
                 loadArticleDetail(data.slug);
                 break;
 
@@ -546,24 +704,64 @@
                 document.getElementById('privacy-view').style.display = 'block';
                 document.title = 'プライバシーポリシー | 夢占い（dream-meanings-global）';
                 if (updateHistory) window.history.pushState({page: 'privacy'}, '', '?page=privacy');
-                if (typeof gtag !== 'undefined') gtag('event', 'page_view', { page_title: 'プライバシーポリシー' });
+                if (typeof gtag !== 'undefined') gtag('event', 'page_view', {
+                    page_title: 'プライバシーポリシー'
+                });
                 break;
         }
     }
 
-    window.showHomePage = () => showPage('home');
+    // グローバル関数として公開
+    window.showHomePage = () => {
+        currentCategory = 'all';
+        updateTagActiveState('all');
+        showPage('home');
+    };
     window.showArticlePage = (slug) => showPage('article', {slug});
     window.showPrivacyPage = () => showPage('privacy');
 
+    // カテゴリフィルター（タグクリック時）
+    window.filterByCategory = (category) => {
+        currentCategory = category;
+        updateTagActiveState(category);
+
+        if (category === 'all') {
+            showPage('home');
+        } else {
+            showPage('category', {category});
+        }
+    };
+
+    // タグのアクティブ状態を更新
+    function updateTagActiveState(activeCategory) {
+        document.querySelectorAll('.category-tag').forEach(tag => {
+            tag.classList.remove('active');
+        });
+        document.querySelectorAll('.category-tag').forEach(tag => {
+            const tagCategory = tag.getAttribute('onclick')
+                .replace("filterByCategory('", '')
+                .replace("')", '');
+            if (tagCategory === activeCategory) {
+                tag.classList.add('active');
+            }
+        });
+    }
+
+    // URL解析と初期表示
     function checkUrlAndShowPage(fromPopstate = false) {
         const urlParams = new URLSearchParams(window.location.search);
         const slug = urlParams.get('slug');
         const page = urlParams.get('page');
+        const category = urlParams.get('category');
 
         if (slug) {
             showPage('article', {slug}, !fromPopstate);
         } else if (page === 'privacy') {
             showPage('privacy', {}, !fromPopstate);
+        } else if (category) {
+            currentCategory = category;
+            updateTagActiveState(category);
+            showPage('category', {category}, !fromPopstate);
         } else {
             showPage('home', {}, !fromPopstate);
         }
@@ -572,13 +770,13 @@
     // ========================================
     // 記事一覧読み込み
     // ========================================
-    async function loadArticleList() {
+    async function loadArticleList(initialCategory = null) {
         try {
             const { data, error } = await supabase
                 .from('dream_articles')
                 .select('id, full_title, content, slug, published_at')
                 .order('published_at', { ascending: false })
-                .limit(12);
+                .limit(100); // フィルタリングのため多めに取得
 
             if (error) throw error;
 
@@ -592,38 +790,18 @@
                 return;
             }
 
-            let html = '<div class="articles-grid">';
-            data.forEach(article => {
-                const safeSlug = article.slug || `article-${article.id}`;
-                const cleanContent = (article.content || '')
-                    .replace(/[#*`\[\]()]/g, '')
-                    .substring(0, 120) + '...';
-                const date = new Date(article.published_at).toLocaleDateString('ja-JP', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+            // カテゴリを自動判定してキャッシュ
+            allArticles = data.map(article => ({
+                ...article,
+                category: detectCategory(article.full_title)
+            }));
 
-                html += `
-                    <div class="article-card">
-                        <div class="card-meta">📅 ${date}</div>
-                        <h3 class="card-title">${article.full_title}</h3>
-                        <div class="card-content">${cleanContent}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85em; color: #666;">
-                                <span>🌙</span>
-                                <span>ルナ・ジャスミンが解説</span>
-                            </div>
-                            <button class="read-more-btn" onclick="showArticlePage('${safeSlug}')">
-                                詳しく読む →
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-
-            document.getElementById('latest-articles').innerHTML = html;
+            // 初期カテゴリが指定されていればフィルタリング
+            if (initialCategory && initialCategory !== 'all') {
+                applyFilter(initialCategory);
+            } else {
+                renderArticles(allArticles);
+            }
 
         } catch (error) {
             console.error('❌ 記事一覧エラー:', error);
@@ -634,6 +812,79 @@
                 </div>
             `;
         }
+    }
+
+    // カテゴリフィルター適用
+    function applyFilter(category) {
+        const sectionTitle = document.getElementById('list-section-title');
+
+        if (category === 'all') {
+            sectionTitle.textContent = '✨ 最新の夢占いメッセージ';
+            renderArticles(allArticles);
+        } else {
+            const filtered = allArticles.filter(a => a.category === category);
+            sectionTitle.textContent = `🏷️ ${category}の夢占い（${filtered.length}件）`;
+            if (filtered.length === 0) {
+                document.getElementById('latest-articles').innerHTML = `
+                    <div class="no-articles">
+                        <p>「${category}」カテゴリの記事はまだありません。</p>
+                        <p>ルナ・ジャスミンが近日中に執筆予定です！</p>
+                        <button class="back-btn" onclick="filterByCategory('all')" style="margin-top: 15px;">
+                            ← すべての記事を見る
+                        </button>
+                    </div>
+                `;
+            } else {
+                renderArticles(filtered);
+            }
+        }
+    }
+
+    // 記事カード描画
+    function renderArticles(articles) {
+        if (!articles || articles.length === 0) return;
+
+        // 最新12件に絞る（全件表示の場合）
+        const displayArticles = currentCategory === 'all'
+            ? articles.slice(0, 12)
+            : articles;
+
+        let html = '<div class="articles-grid">';
+        displayArticles.forEach(article => {
+            const safeSlug = article.slug || `article-${article.id}`;
+            const cleanContent = (article.content || '')
+                .replace(/[#*`\[\]()]/g, '')
+                .substring(0, 120) + '...';
+            const date = new Date(article.published_at).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const category = article.category || detectCategory(article.full_title);
+
+            html += `
+                <div class="article-card">
+                    <div class="card-meta">📅 ${date}</div>
+                    <span class="card-category" onclick="filterByCategory('${category}')">
+                        🏷️ ${category}
+                    </span>
+                    <h3 class="card-title">${article.full_title}</h3>
+                    <div class="card-content">${cleanContent}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85em; color: #666;">
+                            <span>🌙</span>
+                            <span>ルナ・ジャスミンが解説</span>
+                        </div>
+                        <button class="read-more-btn" onclick="showArticlePage('${safeSlug}')">
+                            詳しく読む →
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+
+        document.getElementById('latest-articles').innerHTML = html;
     }
 
     // ========================================
@@ -685,6 +936,9 @@
 
             const htmlContent = marked.parse(data.content || '');
 
+            // 記事のカテゴリを判定
+            const articleCategory = detectCategory(data.full_title);
+
             document.getElementById('article-content-area').innerHTML = `
                 <div class="content-box">
                     <div class="article-badge">🌙 ルナ・ジャスミンが解説</div>
@@ -692,13 +946,17 @@
                     <div class="detail-meta">
                         <span>📅 公開日: ${date}</span>
                         <span>⭐ 品質スコア: ${qualityScore}</span>
+                        <span class="detail-category-tag"
+                              onclick="filterByCategory('${articleCategory}'); showHomePage();">
+                            🏷️ ${articleCategory}
+                        </span>
                     </div>
                     <div class="detail-body">${htmlContent}</div>
                     <button class="back-btn" onclick="showHomePage()">← 一覧に戻る</button>
                 </div>
             `;
 
-            loadRelatedArticles(data.id);
+            loadRelatedArticles(data.id, articleCategory);
 
         } catch (error) {
             console.error('❌ 記事詳細エラー:', error);
@@ -715,16 +973,16 @@
     }
 
     // ========================================
-    // 関連記事読み込み
+    // 関連記事読み込み（同カテゴリ優先）
     // ========================================
-    async function loadRelatedArticles(currentId) {
+    async function loadRelatedArticles(currentId, currentCategory) {
         try {
             const { data, error } = await supabase
                 .from('dream_articles')
                 .select('full_title, slug, published_at')
                 .neq('id', currentId)
                 .order('published_at', { ascending: false })
-                .limit(4);
+                .limit(20);
 
             if (error) throw error;
 
@@ -737,14 +995,25 @@
                 return;
             }
 
+            // 同カテゴリを優先して4件選択
+            const withCategory = data.map(a => ({
+                ...a,
+                category: detectCategory(a.full_title)
+            }));
+
+            const sameCategory = withCategory.filter(a => a.category === currentCategory);
+            const otherCategory = withCategory.filter(a => a.category !== currentCategory);
+            const related = [...sameCategory.slice(0, 3), ...otherCategory.slice(0, 1)].slice(0, 4);
+
             let html = '';
-            data.forEach(article => {
+            related.forEach(article => {
                 const date = new Date(article.published_at).toLocaleDateString('ja-JP');
                 html += `
                     <div class="article-card"
                          style="cursor: pointer; min-height: auto;"
                          onclick="showArticlePage('${article.slug}')">
-                        <h4 style="color: var(--primary-purple); margin: 0 0 10px 0; font-size: 1.1em;">
+                        <span class="card-category">🏷️ ${article.category}</span>
+                        <h4 style="color: var(--primary-purple); margin: 8px 0 10px 0; font-size: 1.1em;">
                             ${article.full_title}
                         </h4>
                         <span style="font-size: 0.8em; color: #888;">📅 ${date}</span>
