@@ -82,12 +82,28 @@
 
         * { box-sizing: border-box; }
 
- body {
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color);
     margin: 0;
+    padding: 0;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    background: url('/bg-desert-night.jpg') center center / cover no-repeat;
+    position: relative;
+    
+    /* 絶対パス指定で確実に読み込み */
+    background-image: url('/bg-desert-night.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;  /* Cloudflare Workers対応 */
+    
+    /* オーバーレイは別途pseudo-elementで実装 */
     background-color: #1a0a3e;
 }
+
 /* 半透明オーバーレイ */
 body::before {
     content: '';
@@ -107,22 +123,6 @@ header,
 footer {
     position: relative;
     z-index: 1;
-}
-
-/* 背景画像読み込み失敗時のフォールバック */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(
-        160deg,
-        #0d0628 0%,
-        #1a0a3e 30%,
-        #2d1b69 60%,
-        #1a3a2a 100%
-    );
-    z-index: -1;
 }
 
         header {
