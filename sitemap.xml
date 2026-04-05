@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- トップページ（SPAの入り口） -->
+  <!-- トップページ -->
   <url>
     <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  
+  <!-- 主要カテゴリページ -->
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=神社・寺院</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=空・飛行</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=身体・健康</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=恐怖・不安</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=動物</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?category=人間関係</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
   <!-- プライバシーポリシー -->
   <url>
     <loc>https://dream-meanings-global.3m-consulting-jps.workers.dev/?page=privacy</loc>
