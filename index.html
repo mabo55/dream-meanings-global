@@ -634,14 +634,34 @@ footer {
         { name: '場所・建物', keywords: ['家', '部屋', '学校', '病院', '駅', '電車', '車', '道', '橋', '城', '廃墟', '知らない家'] }
     ];
 
-    function detectCategory(title) {
-        for (const rule of CATEGORY_RULES) {
-            for (const keyword of rule.keywords) {
-                if (title.includes(keyword)) return rule.name;
-            }
-        }
-        return 'その他';
+    // カテゴリ判定：Supabaseのcategoryを優先使用
+function detectCategory(title, savedCategory) {
+  // Supabaseに保存されたcategoryが存在する場合は優先使用
+  if (savedCategory && savedCategory !== 'その他') {
+    return savedCategory;
+  }
+  
+  // フォールバック：タイトルからキーワード判定（拡張版）
+  const CATEGORY_RULES = [
+    { name: '神社・寺院', keywords: ['神社', '寺', '仏', '参拝', '鳥居', 'お守り', '神様', '仏様', '御朱印', '境内'] },
+    { name: '空・飛行', keywords: ['空', '飛ぶ', '飛行', '空中', '浮く', '雲', '空を', '翔', '羽ばたく', '宇宙'] },
+    { name: '身体・健康', keywords: ['歯', '髪', '血', '怪我', '病気', '身体', '体', '裸', '妊娠', '入院', '診察'] },
+    { name: '恐怖・不安', keywords: ['追いかけ', '逃げる', '怖い', '恐怖', '落ちる', '溺れる', '死ぬ', '殺される', '火事', '地震', '幽霊'] },
+    { name: '動物', keywords: ['猫', '犬', '蛇', '虫', '鳥', '魚', '熊', '虎', '龍', 'ゴキブリ', '噛まれる', '大量'] },
+    { name: '人間関係', keywords: ['結婚', '恋愛', '好きな人', '別れ', '友達', '家族', '赤ちゃん', '元彼', '元カノ', '浮気', '知らない人', '喧嘩'] },
+    { name: '自然・天候', keywords: ['海', '山', '川', '雨', '雪', '嵐', '洪水', '花', '木', '森', '太陽', '月', '星'] },
+    { name: 'お金・仕事', keywords: ['お金', '仕事', '会社', '試験', '財布', '宝くじ', '遅刻', '給料', '拾う', '落とす'] },
+    { name: '場所・建物', keywords: ['家', '部屋', '学校', '病院', '駅', '電車', 'トイレ', 'エレベーター', '知らない家', '授業', '乗り遅れる'] }
+  ];
+
+  for (const rule of CATEGORY_RULES) {
+    for (const keyword of rule.keywords) {
+      if (title.includes(keyword)) return rule.name;
     }
+  }
+  return 'その他';
+}
+
 
     let allArticles = [];
     let currentCategory = 'all';
